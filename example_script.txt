@@ -1,0 +1,3 @@
+Imagine your words coming to life with perfect clarity, emotion, and personality—without ever recording a single line. With ElevenLabs, you can transform text into hyper-realistic, human-like speech in seconds. 
+
+python speech_generator.py --file example_script.txt --gender female --tone dramatic --background-music classical
