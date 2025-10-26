@@ -28,6 +28,8 @@ class ScriptGenerator:
 
         5. You must ensure that the pacing fits the target duration of {desired_length} seconds (e.g., 15 seconds ≈ ~35 words, 30 seconds ≈ ~75 words)
 
+        6. The script should be in the following language: {language}
+
         ### EXAMPLE SCRIPT: 
         The following script is an example of a previous ad produced for the company. 
         You should match the tone and energy of the example, but do NOT copy it's details in terms of length, product, etc.
@@ -38,9 +40,19 @@ class ScriptGenerator:
 
         ### OUTPUT FORMAT:
         Return only the spoken script as plain text.
+        You may use the following tags to enhance emotional expression: 
+        - [laughs], [laughs harder], [starts laughing], [wheezing]
+        - [whispers]
+        - [sighs], [exhales]
+        - [sarcastic], [curious], [excited], [crying], [snorts], [mischievously]
+
+        Punctuation should be intentional to enhance the delivery of the script.
+        - Ellipses (…) add pauses and weight
+        - Capitalization increases emphasis
+        - Standard punctuation provides natural speech rhythm
+
         Do not include any of the following:
         - Speaker identifiers (e.g., “Narrator:”, “Voiceover:”)
-        - Tone indicators or emotions in parentheses
         - Audio or music cues (e.g., “[Music fades in]”, “(cheerful tone)”)
         """
 

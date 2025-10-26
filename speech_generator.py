@@ -428,14 +428,14 @@ class ElevenLabsSpeechGenerator:
         
         return best_voice['voice_id']
 
-    def generate_speech(self, text, voice_id, output_file="output.mp3", stability=0.5, similarity_boost=0.5, 
+    def generate_speech(self, text, voice_id=None, output_file="output.mp3", stability=0.5, similarity_boost=0.5, 
                        tone=None, gender=None, background_music=None, language=None):
         """
         Generate speech from text with enhanced voice characteristics.
         
         Args:
             text (str): Text to convert to speech
-            voice_id (str): ID of the voice to use
+            voice_id (str, optional): ID of the voice to use. If None, will auto-select based on tone, gender, and language
             output_file (str): Output filename
             stability (float): Voice stability (0.0 to 1.0)
             similarity_boost (float): Voice similarity boost (0.0 to 1.0)
@@ -444,6 +444,33 @@ class ElevenLabsSpeechGenerator:
             background_music (str): Background music style (none, ambient, upbeat, classical, electronic, acoustic)
             language (str): Language for the speech
         """
+        # Auto-select voice if not provided
+        if voice_id is None:
+            print("🔍 No voice ID provided. Auto-selecting best voice based on your criteria...")
+            voices = self.get_voices()
+            if not voices:
+                raise ValueError("No voices available. Please check your API key and connection.")
+            
+            # Analyze tone if provided (support natural language descriptions)
+            analyzed_tone = None
+            if tone:
+                analyzed_tone = self.analyze_tone_sentiment(tone)
+                if not analyzed_tone:
+                    print("⚠️  Using default tone settings.")
+            
+            # Filter voices based on criteria
+            filtered_voices = self.filter_voices(voices, analyzed_tone, gender, language)
+            
+            if not filtered_voices:
+                print("⚠️  No voices match your criteria. Using any available voice...")
+                filtered_voices = voices
+            
+            # Select the best voice
+            voice_id = self.select_best_voice(filtered_voices, analyzed_tone, gender, language)
+            
+            if not voice_id:
+                raise ValueError("Could not select a voice. Please try with --list-voices to see available options.")
+        
         url = f"{self.base_url}/text-to-speech/{voice_id}"
         
         # Adjust voice settings based on tone
@@ -464,7 +491,7 @@ class ElevenLabsSpeechGenerator:
         
         data = {
             "text": text,
-            "model_id": "eleven_monolingual_v1",
+            "model_id": "eleven_multilingual_v2",
             "voice_settings": {
                 "stability": adjusted_stability,
                 "similarity_boost": adjusted_similarity
@@ -496,12 +523,31 @@ class ElevenLabsSpeechGenerator:
             response.raise_for_status()
             
             # Save the audio file
-            with open(output_file, 'wb') as f:
+            temp_output = "temp_speech.mp3" if background_music and background_music != 'none' else output_file
+            with open(temp_output, 'wb') as f:
                 f.write(response.content)
             
             print(f"✅ Speech generated successfully!")
-            print(f"📁 Output file: {output_file}")
+            print(f"📁 Temporary output file: {temp_output}")
             print(f"📊 File size: {len(response.content)} bytes")
+            
+            # Add background music if requested
+            if background_music and background_music != 'none':
+                print(f"\n🎵 Adding background music ({background_music})...")
+                if self.add_background_music(temp_output, background_music, output_file):
+                    # Clean up temp file
+                    try:
+                        os.remove(temp_output)
+                        print(f"🎵 Final output with background music: {output_file}")
+                    except:
+                        pass
+                else:
+                    # If background music failed, just rename temp file to output
+                    try:
+                        os.rename(temp_output, output_file)
+                        print(f"📁 Speech saved as: {output_file}")
+                    except:
+                        pass
             
         except requests.exceptions.RequestException as e:
             print(f"Error generating speech: {e}")
@@ -512,7 +558,7 @@ class ElevenLabsSpeechGenerator:
                 except:
                     print(f"Response text: {e.response.text}")
 
-    def generate_from_file(self, input_file, voice_id, output_file=None, **kwargs):
+    def generate_from_file(self, input_file, voice_id=None, output_file=None, **kwargs):
         """Generate speech from a text file with enhanced options."""
         try:
             with open(input_file, 'r', encoding='utf-8') as f:
@@ -699,7 +745,7 @@ class ElevenLabsSpeechGenerator:
             # Mix with FFmpeg
             cmd = [
                 'ffmpeg', '-i', speech_file, '-i', music_file,
-                '-filter_complex', '[0]volume=0.8[speech];[1]volume=0.2[music];[speech][music]amix=inputs=2:duration=first',
+                '-filter_complex', '[0]volume=0.9[speech];[1]volume=0.1[music];[speech][music]amix=inputs=2:duration=first',
                 '-y', output_file
             ]
             
@@ -744,9 +790,9 @@ class ElevenLabsSpeechGenerator:
             speech_data = speech_data.astype(np.float32)
             music_data = music_data.astype(np.float32)
             
-            # Mix the audio (speech at 80% volume, background at 20%)
-            speech_volume = speech_data * 0.8
-            music_volume = music_data * 0.2
+            # Mix the audio (speech at 90% volume, background at 10%)
+            speech_volume = speech_data * 0.9
+            music_volume = music_data * 0.1
             
             # Combine the audio
             mixed_data = speech_volume + music_volume
@@ -789,7 +835,7 @@ class ElevenLabsSpeechGenerator:
             music_data = music_data[:min_length]
             
             # Mix with volume control
-            mixed = (0.8 * speech_data + 0.2 * music_data).astype(np.int16)
+            mixed = (0.9 * speech_data + 0.1 * music_data).astype(np.int16)
             
             # Write output
             with wave.open(output_file, 'wb') as out:
@@ -866,9 +912,9 @@ class ElevenLabsSpeechGenerator:
             final_duration = len(speech_audio) / speech_sr
             print(f"🎵 Final mixed duration: {final_duration:.2f}s (perfectly matched)")
             
-            # Mix the audio (speech at 80% volume, background at 20%)
-            speech_volume = speech_audio * 0.8
-            music_volume = music_audio * 0.2
+            # Mix the audio (speech at 90% volume, background at 10%)
+            speech_volume = speech_audio * 0.9
+            music_volume = music_audio * 0.1
             
             # Combine the audio
             mixed_audio = speech_volume + music_volume

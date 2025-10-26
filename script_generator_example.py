@@ -16,7 +16,8 @@ inputs = {
     "desired_length": "60",
     "example_output": (
         "Your story deserves a voice. ElevenLabs turns your words into lifelike sound — ready for any audience, in any language."
-    )
+    ),
+    "language": "chinese"
 }
 
 script_generator = ScriptGenerator(inputs)
