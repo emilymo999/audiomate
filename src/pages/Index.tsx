@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import logo from "@/assets/audiomate-logo.png";
 import gradientBg from "@/assets/gradient-bg.jpg";
+import { useEffect, useRef, useState } from "react";
 import {
   Accordion,
   AccordionContent,
@@ -14,6 +15,45 @@ import {
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
+  const [visibleSections, setVisibleSections] = useState<Set<string>>(new Set());
+  const observerRef = useRef<IntersectionObserver | null>(null);
+
+  useEffect(() => {
+    observerRef.current = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setVisibleSections((prev) => new Set(prev).add(entry.target.id));
+          }
+        });
+      },
+      { threshold: 0.1 }
+    );
+
+    const sections = document.querySelectorAll('[data-animate-on-scroll]');
+    sections.forEach((section) => {
+      if (observerRef.current) {
+        observerRef.current.observe(section);
+      }
+    });
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
+      }
+    };
+  }, []);
+
+  const organizations = [
+    "Nonprofits",
+    "Large Organizations",
+    "Startups",
+    "E-commerce Brands",
+    "Healthcare Providers",
+    "Educational Institutions",
+    "Real Estate Agencies",
+    "Financial Services"
+  ];
 
   const benefits = [
     {
@@ -159,34 +199,49 @@ const Index = () => {
       </section>
 
       {/* Companies Section */}
-      <section className="relative z-10 py-24 px-6">
+      <section 
+        id="companies-section"
+        data-animate-on-scroll
+        className={`relative z-10 py-24 px-6 transition-all duration-1000 ${
+          visibleSections.has('companies-section') 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-warm bg-clip-text text-transparent">
             Applicable to various companies
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
-              <h3 className="text-2xl font-semibold mb-4 text-foreground">Nonprofits</h3>
-              <p className="text-muted-foreground">
-                Amplify your mission with compelling audio campaigns. Reach donors and volunteers with authentic, cost-effective messaging that resonates.
-              </p>
-            </div>
-            
-            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-accent/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
-              <h3 className="text-2xl font-semibold mb-4 text-foreground">Large Organizations</h3>
-              <p className="text-muted-foreground">
-                Scale your advertising efforts with enterprise-grade AI. Generate hundreds of personalized ads in minutes for global campaigns.
-              </p>
+          <div className="relative overflow-hidden py-8">
+            <div className="flex animate-scroll-x">
+              {[...organizations, ...organizations].map((org, index) => (
+                <div
+                  key={index}
+                  className="flex-shrink-0 mx-4 px-8 py-6 rounded-2xl bg-gradient-to-br from-card/60 to-primary/10 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm"
+                >
+                  <h3 className="text-xl font-semibold text-foreground whitespace-nowrap">
+                    {org}
+                  </h3>
+                </div>
+              ))}
             </div>
           </div>
         </div>
       </section>
 
       {/* Benefits Section */}
-      <section className="relative z-10 py-24 px-6 bg-gradient-to-b from-transparent via-card/20 to-transparent">
+      <section 
+        id="benefits-section"
+        data-animate-on-scroll
+        className={`relative z-10 py-24 px-6 bg-gradient-to-b from-transparent via-card/20 to-transparent transition-all duration-1000 ${
+          visibleSections.has('benefits-section') 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-6xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-6 bg-gradient-warm bg-clip-text text-transparent">
             Get started with benefits
           </h2>
           <p className="text-xl text-muted-foreground text-center mb-16 max-w-3xl mx-auto">
@@ -197,8 +252,7 @@ const Index = () => {
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
-                className="p-8 rounded-2xl bg-gradient-to-br from-card/60 via-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm animate-float-slow"
-                style={{ animationDelay: `${index * 0.2}s` }}
+                className="p-8 rounded-2xl bg-gradient-to-br from-card/60 via-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm"
               >
                 <h3 className="text-xl font-semibold mb-4 text-foreground">{benefit.title}</h3>
                 <p className="text-muted-foreground">{benefit.description}</p>
@@ -209,9 +263,17 @@ const Index = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative z-10 py-24 px-6">
+      <section 
+        id="faq-section"
+        data-animate-on-scroll
+        className={`relative z-10 py-24 px-6 transition-all duration-1000 ${
+          visibleSections.has('faq-section') 
+            ? 'opacity-100 translate-y-0' 
+            : 'opacity-0 translate-y-10'
+        }`}
+      >
         <div className="max-w-4xl mx-auto">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold text-center mb-16 bg-gradient-warm bg-clip-text text-transparent">
             FAQ — Audio Ad Generator
           </h2>
           
@@ -220,7 +282,7 @@ const Index = () => {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-gradient-to-r from-card/60 to-primary/5 backdrop-blur-sm border border-border rounded-xl px-6 hover:border-primary/50 transition-colors"
+                className="bg-gradient-to-r from-card/60 to-primary/5 backdrop-blur-sm border border-border rounded-xl px-6 hover:border-primary/50 hover:bg-gradient-to-r hover:from-primary/10 hover:to-accent/10 transition-all duration-300"
               >
                 <AccordionTrigger className="text-left text-lg font-medium hover:text-primary">
                   {faq.question}
