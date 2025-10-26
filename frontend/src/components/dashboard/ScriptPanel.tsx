@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -9,31 +9,87 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Download, Edit, Volume2, Pause, FileText, Music } from "lucide-react";
+import { Download, Edit, FileText, Music, Play, Pause, Volume2, SkipBack, SkipForward } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
+import { generateSpeech, getAudioUrl, GenerateSpeechRequest } from "@/services/api";
+
+// Helper function to format time
+function formatTime(seconds: number): string {
+  const mins = Math.floor(seconds / 60);
+  const secs = Math.floor(seconds % 60);
+  return `${mins}:${secs.toString().padStart(2, '0')}`;
+}
 
 interface ScriptPanelProps {
   script: string;
   isGenerating: boolean;
+  language?: string; // Add language prop
 }
 
-export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
+export function ScriptPanel({ script, isGenerating, language = "english" }: ScriptPanelProps) {
+  const { toast } = useToast();
   const [isEditing, setIsEditing] = useState(false);
   const [editedScript, setEditedScript] = useState(script);
-  const [voiceGender, setVoiceGender] = useState("female");
-  const [voiceTone, setVoiceTone] = useState("friendly");
-  const [backgroundMusic, setBackgroundMusic] = useState("none");
+  const [voiceGender, setVoiceGender] = useState<"male" | "female" | "neutral">("female");
+  const [voiceTone, setVoiceTone] = useState<"friendly" | "professional" | "casual" | "dramatic" | "calm">("friendly");
+  const [backgroundMusic, setBackgroundMusic] = useState<"none" | "ambient" | "upbeat" | "classical" | "electronic" | "acoustic">("none");
   const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
   const [audioGenerated, setAudioGenerated] = useState(false);
+  const [audioUrl, setAudioUrl] = useState<string | null>(null);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
+  const audioRef = useRef<HTMLAudioElement>(null);
 
-  const handleGenerateAudio = () => {
+  const handleGenerateAudio = async () => {
+    if (!editedScript.trim()) {
+      toast({
+        title: "No script to generate",
+        description: "Please provide a script before generating audio.",
+        variant: "destructive",
+      });
+      return;
+    }
+
     setIsGeneratingAudio(true);
-    // Simulate audio generation
-    setTimeout(() => {
-      setIsGeneratingAudio(false);
+    
+    try {
+      const requestData: GenerateSpeechRequest = {
+        script: editedScript,
+        tone: voiceTone,
+        gender: voiceGender,
+        background_music: backgroundMusic,
+        language: language,
+      };
+      
+      const response = await generateSpeech(requestData);
+      
+      // Set the audio URL
+      const url = getAudioUrl(response.filename);
+      setAudioUrl(url);
       setAudioGenerated(true);
-    }, 2000);
+      
+      // Reset playback state
+      setCurrentTime(0);
+      setDuration(0);
+      setIsPlaying(false);
+      
+      toast({
+        title: "Audio generated successfully!",
+        description: "Your speech synthesis is ready.",
+      });
+    } catch (error) {
+      console.error("Error generating audio:", error);
+      
+      toast({
+        title: "Failed to generate audio",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGeneratingAudio(false);
+    }
   };
 
   useEffect(() => {
@@ -102,7 +158,7 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
           <CardContent className="space-y-6">
             <div className="space-y-2">
               <Label>Background Music Style</Label>
-              <Select value={backgroundMusic} onValueChange={setBackgroundMusic}>
+              <Select value={backgroundMusic} onValueChange={(value) => setBackgroundMusic(value as typeof backgroundMusic)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -119,20 +175,21 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
 
             <div className="space-y-2">
               <Label>Gender</Label>
-              <Select value={voiceGender} onValueChange={setVoiceGender}>
+              <Select value={voiceGender} onValueChange={(value) => setVoiceGender(value as typeof voiceGender)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="male">Male</SelectItem>
                   <SelectItem value="female">Female</SelectItem>
+                  <SelectItem value="neutral">Neutral</SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-2">
               <Label>Tone</Label>
-              <Select value={voiceTone} onValueChange={setVoiceTone}>
+              <Select value={voiceTone} onValueChange={(value) => setVoiceTone(value as typeof voiceTone)}>
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
@@ -171,15 +228,39 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            {audioGenerated ? (
+            {audioGenerated && audioUrl ? (
               <div className="space-y-4">
                 {/* Audio Controls */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-2">
                   <Button
                     variant="ghost"
                     size="icon"
                     className="h-10 w-10"
-                    onClick={() => setIsPlaying(!isPlaying)}
+                    onClick={() => {
+                      if (audioRef.current) {
+                        audioRef.current.currentTime = Math.max(0, audioRef.current.currentTime - 10);
+                      }
+                    }}
+                    disabled={duration === 0}
+                  >
+                    <SkipBack className="h-5 w-5" />
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => {
+                      if (audioRef.current) {
+                        if (isPlaying) {
+                          audioRef.current.pause();
+                          setIsPlaying(false);
+                        } else {
+                          audioRef.current.play();
+                          setIsPlaying(true);
+                        }
+                      }
+                    }}
                   >
                     {isPlaying ? (
                       <Pause className="h-5 w-5" />
@@ -188,35 +269,98 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                     )}
                   </Button>
                   
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => {
+                      if (audioRef.current) {
+                        audioRef.current.currentTime = Math.min(duration, audioRef.current.currentTime + 10);
+                      }
+                    }}
+                    disabled={duration === 0}
+                  >
+                    <SkipForward className="h-5 w-5" />
+                  </Button>
+                  
                   <div className="flex-1 text-sm font-medium">
-                    Audio Ad - Final Mix
+                    Generated Audio
                   </div>
                   
-                  <Volume2 className="h-5 w-5 text-muted-foreground" />
-                  
-                  <Button variant="outline" size="icon">
+                  <Button 
+                    variant="outline" 
+                    size="icon"
+                    onClick={() => {
+                      const link = document.createElement('a');
+                      link.href = audioUrl;
+                      link.download = audioUrl.split('/').pop() || 'generated-audio.mp3';
+                      link.click();
+                    }}
+                  >
                     <Download className="h-4 w-4" />
                   </Button>
                 </div>
 
-                {/* Progress Bar */}
+                {/* Progress Bar - Clickable for scrubbing */}
                 <div className="space-y-2">
-                  <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                  <div 
+                    className="relative h-3 bg-muted rounded-full overflow-visible cursor-pointer group"
+                    onClick={(e) => {
+                      if (audioRef.current && duration > 0) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const percentage = x / rect.width;
+                        audioRef.current.currentTime = percentage * duration;
+                      }
+                    }}
+                    onMouseMove={(e) => {
+                      if (duration > 0) {
+                        const rect = e.currentTarget.getBoundingClientRect();
+                        const x = e.clientX - rect.left;
+                        const percentage = x / rect.width;
+                        if (percentage >= 0 && percentage <= 1) {
+                          e.currentTarget.style.cursor = 'pointer';
+                        }
+                      }
+                    }}
+                  >
+                    {/* Progress Fill */}
                     <div 
                       className="absolute h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all"
-                      style={{ width: "45%" }}
+                      style={{ width: duration > 0 ? `${(currentTime / duration) * 100}%` : '0%' }}
                     />
+                    {/* Playhead Knob */}
                     <div 
-                      className="absolute h-4 w-4 bg-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg"
-                      style={{ left: "calc(45% - 8px)" }}
+                      className="absolute h-5 w-5 bg-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg cursor-grab active:cursor-grabbing transition-transform group-hover:scale-110"
+                      style={{ left: duration > 0 ? `calc(${(currentTime / duration) * 100}% - 10px)` : '-10px' }}
                     />
                   </div>
                   
                   <div className="flex justify-between text-xs text-muted-foreground">
-                    <span>0:23</span>
-                    <span>0:30</span>
+                    <span>{formatTime(currentTime)}</span>
+                    <span>{formatTime(duration)}</span>
                   </div>
                 </div>
+
+                {/* Hidden audio element for control */}
+                <audio 
+                  ref={audioRef}
+                  src={audioUrl}
+                  onTimeUpdate={(e) => {
+                    const audio = e.target as HTMLAudioElement;
+                    setCurrentTime(audio.currentTime);
+                  }}
+                  onLoadedMetadata={(e) => {
+                    const audio = e.target as HTMLAudioElement;
+                    setDuration(audio.duration);
+                  }}
+                  onEnded={() => {
+                    setIsPlaying(false);
+                    setCurrentTime(0);
+                  }}
+                  onPlay={() => setIsPlaying(true)}
+                  onPause={() => setIsPlaying(false)}
+                />
               </div>
             ) : (
               <div className="py-8 text-center text-sm text-muted-foreground">

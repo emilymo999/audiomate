@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -17,6 +17,7 @@ import {
 interface InputFormProps {
   onGenerate: (data: any) => void;
   isGenerating: boolean;
+  key?: any;
 }
 
 const languages = [
@@ -101,14 +102,14 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
     product_name: "",
     product_details: "",
     company_context: "",
-    previous_example_ads: "",
+    example_output: "",
     desired_length: 30,
     target_audience: "",
     distribution_method: "",
     language: "en",
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
     onGenerate(formData);
   };
@@ -163,11 +164,11 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
           </div>
 
           <div className="space-y-2">
-            <Label htmlFor="previous_example_ads">Previous Example Ads (Optional)</Label>
+            <Label htmlFor="example_output">Previous Example Ads (Optional)</Label>
             <Textarea
-              id="previous_example_ads"
-              value={formData.previous_example_ads}
-              onChange={(e) => handleChange("previous_example_ads", e.target.value)}
+              id="example_output"
+              value={formData.example_output}
+              onChange={(e) => handleChange("example_output", e.target.value)}
               placeholder="Paste examples of ads that worked well for you"
               rows={3}
             />

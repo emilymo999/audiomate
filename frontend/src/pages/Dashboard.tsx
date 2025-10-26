@@ -6,14 +6,18 @@ import { InputForm } from "@/components/dashboard/InputForm";
 import { ScriptPanel } from "@/components/dashboard/ScriptPanel";
 import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import { useToast } from "@/hooks/use-toast";
+import { generateScript, GenerateScriptRequest } from "@/services/api";
 
 const Dashboard = () => {
   const { theme, setTheme } = useTheme();
+  const { toast } = useToast();
   const [searchParams, setSearchParams] = useSearchParams();
   const [generatedScript, setGeneratedScript] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSplitView, setShowSplitView] = useState(false);
   const [resetKey, setResetKey] = useState(0);
+  const [language, setLanguage] = useState("english");
 
   // Reset dashboard when 'new' query param is present
   useEffect(() => {
@@ -30,17 +34,45 @@ const Dashboard = () => {
     setIsGenerating(true);
     setShowSplitView(true); // Switch to split view when generation starts
     
-    // Simulate script generation
-    setTimeout(() => {
-      const script = `Introducing ${formData.product_name}! ${formData.product_details} 
+    // Store the language for speech generation
+    setLanguage(formData.language || "english");
+    
+    try {
+      // Prepare the request data with proper typing
+      const requestData: GenerateScriptRequest = {
+        product_name: formData.product_name,
+        product_details: formData.product_details,
+        company_context: formData.company_context,
+        target_audience: formData.target_audience,
+        distribution_method: formData.distribution_method,
+        desired_length: formData.desired_length,
+        example_output: formData.example_output || "",
+        language: formData.language,
+      };
       
-Perfect for ${formData.target_audience}. Available now on ${formData.distribution_method}. 
-
-Don't miss out - experience the difference today!`;
+      // Call the API
+      const response = await generateScript(requestData);
       
-      setGeneratedScript(script);
+      // Update the generated script
+      setGeneratedScript(response.script);
+      
+      // Show success toast
+      toast({
+        title: "Script generated successfully!",
+        description: "Your advertisement script is ready.",
+      });
+    } catch (error) {
+      console.error("Error generating script:", error);
+      
+      // Show error toast
+      toast({
+        title: "Failed to generate script",
+        description: error instanceof Error ? error.message : "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
       setIsGenerating(false);
-    }, 2000);
+    }
   };
 
   return (
@@ -81,7 +113,7 @@ Don't miss out - experience the difference today!`;
               /* Two column split view */
               <div className="h-full grid lg:grid-cols-2 gap-6">
                 <InputForm key={resetKey} onGenerate={handleGenerate} isGenerating={isGenerating} />
-                <ScriptPanel script={generatedScript} isGenerating={isGenerating} />
+                <ScriptPanel script={generatedScript} isGenerating={isGenerating} language={language} />
               </div>
             )}
           </div>
