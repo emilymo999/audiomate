@@ -18,6 +18,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
+import Autoplay from "embla-carousel-autoplay";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
@@ -28,6 +29,14 @@ const Index = () => {
       description: "Amplify your mission with compelling audio campaigns. Reach donors and volunteers with authentic, cost-effective messaging that resonates."
     },
     {
+      title: "Small & Medium Businesses",
+      description: "Unlock new growth and reach local customers with affordable, fast-turnaround audio campaigns. Create high-impact messaging without the need for large marketing teams."
+    },
+    {
+      title: "Startups",
+      description: "Accelerate brand awareness from day one. Share your mission and product value clearly with agile, data-driven audio campaigns that scale as you grow."
+    },
+    {
       title: "Large Organizations",
       description: "Scale your advertising efforts with enterprise-grade AI. Generate hundreds of personalized ads in minutes for global campaigns."
     },
@@ -36,16 +45,8 @@ const Index = () => {
       description: "Engage prospective students, alumni, and donors with authentic messaging tailored to diverse audiences across radio, streaming, and digital channels."
     },
     {
-      title: "Small and Medium Businesses",
-      description: "Unlock new growth with fast, affordable audio ad creation. Craft compelling messages that drive conversions without requiring large marketing teams or budgets."
-    },
-    {
       title: "E-Commerce Brands",
-      description: "Boost customer acquisition with dynamic, product-focused audio campaigns. Deliver promotions, seasonal offers, and personalized messages that drive shoppers directly to checkout."
-    },
-    {
-      title: "Startups",
-      description: "Move fast and scale your outreach with agile, high-impact audio content. Communicate your unique value proposition and build brand awareness from day one."
+      description: "Drive conversions with dynamic, product-focused audio ads designed to boost sales. Deliver timely promotions directly to shoppers across streaming and social audio placements."
     }
   ];
 
@@ -73,10 +74,6 @@ const Index = () => {
       answer: "You'll need to provide your company context, product details, brand values, target audience, ad tone, length, and distribution platform."
     },
     {
-      question: "Can I upload files instead of typing everything manually?",
-      answer: "Yes, you can upload documents (PDF, DOCX), images (PNG, JPG), and audio files (MP3) as part of your input."
-    },
-    {
       question: "How do I choose the voice for my ad?",
       answer: "You can select from preset voices by gender, age, and tone—or upload an audio sample to clone a voice."
     },
@@ -95,10 +92,6 @@ const Index = () => {
     {
       question: "Does the system support other languages?",
       answer: "Yes. You can generate scripts and audio in multiple languages, including Spanish, Hindi, French, and more."
-    },
-    {
-      question: "What platforms is the audio optimized for?",
-      answer: "You can specify radio, Spotify, or custom channels—each will adjust the ad's tone and format accordingly."
     },
     {
       question: "Can I generate more than one version of an ad?",
@@ -128,7 +121,7 @@ const Index = () => {
       <div className="fixed inset-0 z-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95 dark:from-background/98 dark:via-background/95 dark:to-background/98" />
       
       {/* Light mode radial gradient overlay */}
-      <div className="fixed inset-0 z-0 dark:hidden bg-gradient-radial opacity-0 animate-fade-in" style={{
+      <div className="fixed inset-0 z-0 dark:hidden bg-gradient-radial opacity-0 animate-fade-in pointer-events-none" style={{
         background: 'radial-gradient(circle at 50% 60%, hsl(var(--primary) / 0.15) 0%, hsl(var(--accent) / 0.12) 30%, transparent 70%)',
         animationDuration: '1.5s',
         animationFillMode: 'forwards'
@@ -207,19 +200,34 @@ const Index = () => {
               align: "start",
               loop: true,
             }}
+            plugins={[
+              Autoplay({
+                delay: 3000,
+              })
+            ]}
             className="w-full"
           >
             <CarouselContent className="-ml-4">
-              {companies.map((company, index) => (
-                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
-                  <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm h-full">
-                    <h3 className="text-xl font-semibold mb-4 text-foreground">{company.title}</h3>
-                    <p className="text-muted-foreground text-sm leading-relaxed">
-                      {company.description}
-                    </p>
-                  </div>
-                </CarouselItem>
-              ))}
+              {companies.map((company, index) => {
+                const colors = [
+                  "from-orange-500/10 to-orange-600/5 border-orange-500/30 hover:border-orange-500/50",
+                  "from-blue-500/10 to-blue-600/5 border-blue-500/30 hover:border-blue-500/50",
+                  "from-purple-500/10 to-purple-600/5 border-purple-500/30 hover:border-purple-500/50",
+                  "from-green-500/10 to-green-600/5 border-green-500/30 hover:border-green-500/50",
+                  "from-pink-500/10 to-pink-600/5 border-pink-500/30 hover:border-pink-500/50",
+                  "from-amber-500/10 to-amber-600/5 border-amber-500/30 hover:border-amber-500/50"
+                ];
+                return (
+                  <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                    <div className={`group p-8 rounded-2xl bg-gradient-to-br backdrop-blur-sm border transition-all duration-300 hover:shadow-warm h-full ${colors[index]}`}>
+                      <h3 className="text-xl font-semibold mb-4 text-foreground">{company.title}</h3>
+                      <p className="text-muted-foreground text-sm leading-relaxed">
+                        {company.description}
+                      </p>
+                    </div>
+                  </CarouselItem>
+                );
+              })}
             </CarouselContent>
             <CarouselPrevious className="hidden md:flex" />
             <CarouselNext className="hidden md:flex" />
@@ -287,11 +295,12 @@ const Index = () => {
       {/* Final CTA Section */}
       <section className="relative z-10 py-32 px-6">
         <div 
-          className="max-w-5xl mx-auto rounded-3xl p-16 text-center relative overflow-hidden"
+          className="max-w-5xl mx-auto rounded-3xl p-16 text-center relative overflow-hidden animate-fade-in hover-scale"
           style={{
             background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.1) 100%)',
             backdropFilter: 'blur(20px)',
-            border: '1px solid hsl(var(--border))'
+            border: '1px solid hsl(var(--border))',
+            animationDelay: '0.2s'
           }}
         >
           <h2 className="text-4xl md:text-5xl font-bold mb-6">

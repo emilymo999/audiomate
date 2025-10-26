@@ -23,8 +23,8 @@ export function DashboardSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      <div className="p-6 border-b border-sidebar-border">
+    <Sidebar className="border-r border-border">
+      <div className="p-6 border-b border-border">
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Audiomate" className="h-8 w-8" />
           <span className="text-lg font-bold bg-gradient-warm bg-clip-text text-transparent">
@@ -81,11 +81,14 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-4">
+      <SidebarFooter className="border-t border-border p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/dashboard">
+            <SidebarMenuButton 
+              asChild
+              isActive={location.pathname === "/contact"}
+            >
+              <Link to="/contact">
                 <MessageSquare className="h-4 w-4" />
                 <span>Feedback</span>
               </Link>
