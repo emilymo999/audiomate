@@ -2,8 +2,6 @@
 
 Generate realistic, radio- and Spotify-ready audio ads from raw text and branding input. Produce high-quality, personalized, and advertising media efficiently.
 
----
-
 ## Features
 
 - **Text-to-Audio Generation:** Converts company descriptions and branding information into natural-sounding audio ads
