@@ -10,6 +10,7 @@ import sys
 import argparse
 import requests
 import json
+import datetime
 from pathlib import Path
 try:
     from pydub import AudioSegment
@@ -444,6 +445,15 @@ class ElevenLabsSpeechGenerator:
             background_music (str): Background music style (none, ambient, upbeat, classical, electronic, acoustic)
             language (str): Language for the speech
         """
+        # Generate output filename in outputs folder if using default
+        if output_file == "output.mp3":
+            output_file = self.generate_output_filename(
+                tone=tone,
+                gender=gender,
+                language=language,
+                background_music=background_music
+            )
+        
         # Auto-select voice if not provided
         if voice_id is None:
             print("🔍 No voice ID provided. Auto-selecting best voice based on your criteria...")
@@ -972,6 +982,35 @@ class ElevenLabsSpeechGenerator:
             print(f"  - {lang.title()}")
         print(f"  ... and {len(self.language_codes) - 20} more languages")
 
+    @staticmethod
+    def generate_output_filename(tone=None, gender=None, language=None, background_music=None, default_name="output.mp3"):
+        """Generate a meaningful output filename based on parameters."""
+        # Create outputs directory if it doesn't exist
+        outputs_dir = Path("outputs")
+        outputs_dir.mkdir(exist_ok=True)
+        
+        # Build filename components
+        parts = []
+        if tone:
+            parts.append(tone)
+        if gender:
+            parts.append(gender)
+        if language:
+            parts.append(language[:10])  # Limit language name length
+        if background_music and background_music != 'none':
+            parts.append(f"bg_{background_music}")
+        
+        # Add timestamp to ensure uniqueness
+        timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+        
+        # Build filename
+        if parts:
+            filename = f"speech_{'_'.join(parts)}_{timestamp}.mp3"
+        else:
+            filename = f"speech_{timestamp}.mp3"
+        
+        return str(outputs_dir / filename)
+
 
 def main():
     parser = argparse.ArgumentParser(description="Generate speech from text using ElevenLabs API with enhanced voice characteristics")
@@ -979,7 +1018,7 @@ def main():
     parser.add_argument("--text", help="Text to convert to speech")
     parser.add_argument("--file", help="Text file to convert to speech")
     parser.add_argument("--voice-id", help="Voice ID to use (optional - will auto-select if not provided)")
-    parser.add_argument("--output", "-o", default="output.mp3", help="Output audio file (default: output.mp3)")
+    parser.add_argument("--output", "-o", default=None, help="Output audio file (default: auto-generated in outputs directory)")
     parser.add_argument("--list-voices", action="store_true", help="List available voices")
     parser.add_argument("--stability", type=float, default=0.5, help="Voice stability (0.0-1.0, default: 0.5)")
     parser.add_argument("--similarity-boost", type=float, default=0.5, help="Voice similarity boost (0.0-1.0, default: 0.5)")
@@ -1082,6 +1121,21 @@ def main():
             'background_music': args.background_music,
             'language': args.language
         }
+        
+        # Generate output filename if not provided
+        if args.output is None:
+            args.output = ElevenLabsSpeechGenerator.generate_output_filename(
+                tone=analyzed_tone,
+                gender=args.gender,
+                language=args.language,
+                background_music=args.background_music
+            )
+        else:
+            # Ensure the directory for custom output exists
+            output_path = Path(args.output)
+            output_path.parent.mkdir(parents=True, exist_ok=True)
+        
+        print(f"📁 Output will be saved to: {args.output}")
         
         # Generate speech first
         temp_output = "temp_speech.mp3" if args.background_music and args.background_music != 'none' else args.output

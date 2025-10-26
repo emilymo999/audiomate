@@ -15,11 +15,11 @@ user_inputs = {
     ),
     "target_audience": "Content creators and developers looking for high-quality synthetic voices",
     "distribution_method": "Radio",
-    "desired_length": "60",
+    "desired_length": "10",
     "example_output": (
         "Your story deserves a voice. ElevenLabs turns your words into lifelike sound — ready for any audience, in any language."
     ), 
-    "language": "chinese"
+    "language": "vietnamese"
 }
 
 script_generator = ScriptGenerator(user_inputs)
@@ -30,11 +30,10 @@ speech_generator = ElevenLabsSpeechGenerator(api_key=os.getenv('ELEVENLABS_API_K
 tone = "dramatic"
 gender = "male"
 background_music = "electronic"
-language = "chinese" 
+language = "vietnamese" 
 
 speech_generator.generate_speech(
     script, 
-    output_file='output.mp3',
     tone=tone,
     gender=gender,
     background_music=background_music,
