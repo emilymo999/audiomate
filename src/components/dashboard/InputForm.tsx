@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ClipboardList } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -120,7 +120,10 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   return (
     <Card className="shadow-soft flex flex-col">
       <CardHeader>
-        <CardTitle>Ad Details</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <ClipboardList className="h-5 w-5" />
+          Ad Details
+        </CardTitle>
         <p className="text-sm text-muted-foreground">Fill in the details below to generate your custom ad script</p>
       </CardHeader>
       <CardContent className="flex-1">

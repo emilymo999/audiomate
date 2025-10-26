@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Download, Edit, Volume2, Pause, RotateCcw, RotateCw } from "lucide-react";
+import { Play, Download, Edit, Volume2, Pause, RotateCcw, RotateCw, FileText, Music } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 interface ScriptPanelProps {
@@ -45,10 +45,10 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
       {/* Generated Script */}
       <Card className="shadow-soft flex-1 flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between">
-          <div>
-            <CardTitle>Generated Script</CardTitle>
-            <p className="text-sm text-muted-foreground mt-1">This is an example script. Fill in ad details to generate an ad.</p>
-          </div>
+          <CardTitle className="flex items-center gap-2">
+            <FileText className="h-5 w-5" />
+            Generated Script
+          </CardTitle>
           {script && (
             <Button
               variant="ghost"
@@ -168,7 +168,10 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
       {script && (
         <Card className="shadow-soft">
           <CardHeader>
-            <CardTitle className="text-base">Generated Audio</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <Music className="h-5 w-5" />
+              Generated Audio
+            </CardTitle>
           </CardHeader>
           <CardContent>
             {audioGenerated ? (
