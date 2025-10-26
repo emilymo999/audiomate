@@ -143,7 +143,7 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
               value={formData.product_details}
               onChange={(e) => handleChange("product_details", e.target.value)}
               placeholder="Describe your product's key features and benefits"
-              rows={4}
+              rows={3}
               required
             />
           </div>
