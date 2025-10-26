@@ -1,17 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { InputForm } from "@/components/dashboard/InputForm";
 import { ScriptPanel } from "@/components/dashboard/ScriptPanel";
-import { Button } from "@/components/ui/button";
-import { Plus, Moon, Sun } from "lucide-react";
+import { Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
 
 const Dashboard = () => {
   const { theme, setTheme } = useTheme();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [generatedScript, setGeneratedScript] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [showSplitView, setShowSplitView] = useState(false);
+  const [resetKey, setResetKey] = useState(0);
+
+  // Reset dashboard when 'new' query param is present
+  useEffect(() => {
+    if (searchParams.get('new') === 'true') {
+      setGeneratedScript("");
+      setShowSplitView(false);
+      setResetKey(prev => prev + 1);
+      // Clear the query param
+      setSearchParams({});
+    }
+  }, [searchParams, setSearchParams]);
 
   const handleGenerate = async (formData: any) => {
     setIsGenerating(true);
@@ -34,7 +47,7 @@ Don't miss out - experience the difference today!`;
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background relative overflow-hidden">
         {/* Orange gradient background from the right */}
-        <div className="absolute inset-0 bg-gradient-to-l from-orange-100/40 via-transparent to-transparent dark:from-orange-950/20 dark:via-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-l from-orange-100/70 via-orange-50/30 to-transparent dark:from-orange-950/40 dark:via-orange-950/15 dark:to-transparent pointer-events-none" />
         
         <DashboardSidebar />
         
@@ -52,10 +65,6 @@ Don't miss out - experience the difference today!`;
                   <Moon className="h-4 w-4 text-foreground" />
                 )}
               </button>
-              <Button variant="hero" size="sm">
-                <Plus className="mr-2 h-4 w-4" />
-                New Project
-              </Button>
             </div>
           </header>
 
@@ -65,13 +74,13 @@ Don't miss out - experience the difference today!`;
               /* Centered single column view */
               <div className="h-full flex items-center justify-center">
                 <div className="w-full max-w-3xl">
-                  <InputForm onGenerate={handleGenerate} isGenerating={isGenerating} />
+                  <InputForm key={resetKey} onGenerate={handleGenerate} isGenerating={isGenerating} />
                 </div>
               </div>
             ) : (
               /* Two column split view */
               <div className="h-full grid lg:grid-cols-2 gap-6">
-                <InputForm onGenerate={handleGenerate} isGenerating={isGenerating} />
+                <InputForm key={resetKey} onGenerate={handleGenerate} isGenerating={isGenerating} />
                 <ScriptPanel script={generatedScript} isGenerating={isGenerating} />
               </div>
             )}

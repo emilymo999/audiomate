@@ -4,17 +4,19 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Home, Trash2, MessageSquare } from "lucide-react";
+import { Library as LibraryIcon, MessageSquare, Plus } from "lucide-react";
 import logo from "@/assets/audiomate-logo.png";
 
-const menuItems = [
-  { title: "Home", url: "/dashboard", icon: Home },
-  { title: "Recently Deleted", url: "/dashboard", icon: Trash2 },
+const savedAds = [
+  { title: "Summer Sale Campaign", id: "summer-sale" },
+  { title: "Product Launch Audio", id: "product-launch" },
+  { title: "Holiday Special Ad", id: "holiday-special" },
 ];
 
 export function DashboardSidebar() {
@@ -35,15 +37,41 @@ export function DashboardSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/dashboard?new=true">
+                    <Plus className="h-4 w-4" />
+                    <span>New Project</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === "/library"}
+                >
+                  <Link to="/library">
+                    <LibraryIcon className="h-4 w-4" />
+                    <span>Library</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Generated Ads</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {savedAds.map((ad) => (
+                <SidebarMenuItem key={ad.id}>
                   <SidebarMenuButton
                     asChild
-                    isActive={location.pathname === item.url}
+                    isActive={location.pathname === `/saved-ad/${ad.id}`}
                   >
-                    <Link to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                    <Link to={`/saved-ad/${ad.id}`}>
+                      <span className="truncate">{ad.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>

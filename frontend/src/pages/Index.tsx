@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Play, ChevronDown, Sparkles } from "lucide-react";
+import { Play, ChevronDown, Sparkles, Zap, Wand2, Mic } from "lucide-react";
 import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import logo from "@/assets/audiomate-logo.png";
@@ -11,20 +11,57 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
 
+  const companies = [
+    {
+      title: "Nonprofits",
+      description: "Amplify your mission with compelling audio campaigns. Reach donors and volunteers with authentic, cost-effective messaging that resonates."
+    },
+    {
+      title: "Large Organizations",
+      description: "Scale your advertising efforts with enterprise-grade AI. Generate hundreds of personalized ads in minutes for global campaigns."
+    },
+    {
+      title: "Educational Institutions",
+      description: "Engage prospective students, alumni, and donors with authentic messaging tailored to diverse audiences across radio, streaming, and digital channels."
+    },
+    {
+      title: "Small and Medium Businesses",
+      description: "Unlock new growth with fast, affordable audio ad creation. Craft compelling messages that drive conversions without requiring large marketing teams or budgets."
+    },
+    {
+      title: "E-Commerce Brands",
+      description: "Boost customer acquisition with dynamic, product-focused audio campaigns. Deliver promotions, seasonal offers, and personalized messages that drive shoppers directly to checkout."
+    },
+    {
+      title: "Startups",
+      description: "Move fast and scale your outreach with agile, high-impact audio content. Communicate your unique value proposition and build brand awareness from day one."
+    }
+  ];
+
   const benefits = [
     {
+      icon: Zap,
       title: "Lightning Fast Generation",
       description: "Create professional audio ads in under 60 seconds—no audio expertise required."
     },
     {
+      icon: Wand2,
       title: "AI-Powered Scripting",
       description: "Advanced language models craft compelling ad copy tailored to your brand and audience."
     },
     {
+      icon: Mic,
       title: "Voice Customization",
       description: "Choose from diverse voice profiles or clone your own voice for authentic brand representation."
     }
@@ -160,26 +197,33 @@ const Index = () => {
 
       {/* Companies Section */}
       <section className="relative z-10 py-24 px-6">
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
             Applicable to various companies
           </h2>
           
-          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
-              <h3 className="text-2xl font-semibold mb-4 text-foreground">Nonprofits</h3>
-              <p className="text-muted-foreground">
-                Amplify your mission with compelling audio campaigns. Reach donors and volunteers with authentic, cost-effective messaging that resonates.
-              </p>
-            </div>
-            
-            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-accent/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
-              <h3 className="text-2xl font-semibold mb-4 text-foreground">Large Organizations</h3>
-              <p className="text-muted-foreground">
-                Scale your advertising efforts with enterprise-grade AI. Generate hundreds of personalized ads in minutes for global campaigns.
-              </p>
-            </div>
-          </div>
+          <Carousel
+            opts={{
+              align: "start",
+              loop: true,
+            }}
+            className="w-full"
+          >
+            <CarouselContent className="-ml-4">
+              {companies.map((company, index) => (
+                <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
+                  <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm h-full">
+                    <h3 className="text-xl font-semibold mb-4 text-foreground">{company.title}</h3>
+                    <p className="text-muted-foreground text-sm leading-relaxed">
+                      {company.description}
+                    </p>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious className="hidden md:flex" />
+            <CarouselNext className="hidden md:flex" />
+          </Carousel>
         </div>
       </section>
 
@@ -187,23 +231,29 @@ const Index = () => {
       <section className="relative z-10 py-24 px-6 bg-gradient-to-b from-transparent via-card/20 to-transparent">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
-            Get started with benefits
+            Why choose Audiomate?
           </h2>
           <p className="text-xl text-muted-foreground text-center mb-16 max-w-3xl mx-auto">
             Everything you need to create professional audio advertisements in minutes
           </p>
           
           <div className="grid md:grid-cols-3 gap-8">
-            {benefits.map((benefit, index) => (
-              <div 
-                key={index}
-                className="p-8 rounded-2xl bg-gradient-to-br from-card/60 via-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm animate-float-slow"
-                style={{ animationDelay: `${index * 0.2}s` }}
-              >
-                <h3 className="text-xl font-semibold mb-4 text-foreground">{benefit.title}</h3>
-                <p className="text-muted-foreground">{benefit.description}</p>
-              </div>
-            ))}
+            {benefits.map((benefit, index) => {
+              const Icon = benefit.icon;
+              return (
+                <div 
+                  key={index}
+                  className="group p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-500 hover:shadow-warm animate-fade-in"
+                  style={{ animationDelay: `${index * 0.15}s` }}
+                >
+                  <div className="w-12 h-12 rounded-xl bg-gradient-warm flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                    <Icon className="h-6 w-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-4 text-foreground">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
       </section>
