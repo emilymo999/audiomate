@@ -89,6 +89,13 @@ const Index = () => {
         }}
       />
       <div className="fixed inset-0 z-0 bg-gradient-to-b from-background/95 via-background/90 to-background/95 dark:from-background/98 dark:via-background/95 dark:to-background/98" />
+      
+      {/* Light mode radial gradient overlay */}
+      <div className="fixed inset-0 z-0 dark:hidden bg-gradient-radial opacity-0 animate-fade-in" style={{
+        background: 'radial-gradient(circle at 50% 60%, hsl(var(--primary) / 0.15) 0%, hsl(var(--accent) / 0.12) 30%, transparent 70%)',
+        animationDuration: '1.5s',
+        animationFillMode: 'forwards'
+      }} />
 
       {/* Theme Toggle */}
       <button
@@ -106,7 +113,7 @@ const Index = () => {
       <section className="relative z-10 min-h-screen flex flex-col items-center justify-center px-6">
         <div className="max-w-5xl mx-auto text-center space-y-8 animate-fade-in">
           {/* Logo */}
-          <div className="flex justify-center mb-8">
+          <div className="flex justify-center mb-8 animate-float">
             <img src={logo} alt="Audiomate" className="h-24 w-24 md:h-32 md:w-32" />
           </div>
 
@@ -128,7 +135,7 @@ const Index = () => {
           </div>
 
           {/* CTA Buttons */}
-          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8">
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center pt-8 mb-16">
             <Link to="/dashboard">
               <Button variant="hero" size="xl" className="group">
                 Get Started
@@ -145,9 +152,9 @@ const Index = () => {
         </div>
 
         {/* Explore More Indicator */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground animate-pulse-slow">
-          <span className="text-sm font-medium">Explore more</span>
-          <ChevronDown className="h-6 w-6" />
+        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-muted-foreground">
+          <span className="text-sm font-medium animate-float-slow">Explore more</span>
+          <ChevronDown className="h-6 w-6 animate-bounce-gentle" />
         </div>
       </section>
 
@@ -159,14 +166,14 @@ const Index = () => {
           </h2>
           
           <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-            <div className="group p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
+            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
               <h3 className="text-2xl font-semibold mb-4 text-foreground">Nonprofits</h3>
               <p className="text-muted-foreground">
                 Amplify your mission with compelling audio campaigns. Reach donors and volunteers with authentic, cost-effective messaging that resonates.
               </p>
             </div>
             
-            <div className="group p-8 rounded-2xl bg-card/50 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
+            <div className="group p-8 rounded-2xl bg-gradient-to-br from-card/50 to-accent/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:scale-105 hover:shadow-warm">
               <h3 className="text-2xl font-semibold mb-4 text-foreground">Large Organizations</h3>
               <p className="text-muted-foreground">
                 Scale your advertising efforts with enterprise-grade AI. Generate hundreds of personalized ads in minutes for global campaigns.
@@ -190,7 +197,8 @@ const Index = () => {
             {benefits.map((benefit, index) => (
               <div 
                 key={index}
-                className="p-8 rounded-2xl bg-card/60 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm"
+                className="p-8 rounded-2xl bg-gradient-to-br from-card/60 via-card/50 to-primary/5 backdrop-blur-sm border border-border hover:border-primary/50 transition-all duration-300 hover:shadow-warm animate-float-slow"
+                style={{ animationDelay: `${index * 0.2}s` }}
               >
                 <h3 className="text-xl font-semibold mb-4 text-foreground">{benefit.title}</h3>
                 <p className="text-muted-foreground">{benefit.description}</p>
@@ -212,7 +220,7 @@ const Index = () => {
               <AccordionItem 
                 key={index} 
                 value={`item-${index}`}
-                className="bg-card/60 backdrop-blur-sm border border-border rounded-xl px-6 hover:border-primary/50 transition-colors"
+                className="bg-gradient-to-r from-card/60 to-primary/5 backdrop-blur-sm border border-border rounded-xl px-6 hover:border-primary/50 transition-colors"
               >
                 <AccordionTrigger className="text-left text-lg font-medium hover:text-primary">
                   {faq.question}
