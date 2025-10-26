@@ -1,8 +1,10 @@
 # Core dependencies for AudioMate
 flask>=3.0.0
 flask-cors>=4.0.0
-openai>=1.0.0
 requests>=2.31.0
+
+# Google Generative AI for Gemini
+google-genai>=0.2.2
 
 # Optional audio processing dependencies
 # Install these for advanced audio mixing capabilities
