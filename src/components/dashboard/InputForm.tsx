@@ -33,11 +33,12 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   };
 
   return (
-    <Card className="shadow-soft">
+    <Card className="shadow-soft h-full flex flex-col">
       <CardHeader>
         <CardTitle>Ad Details</CardTitle>
+        <p className="text-sm text-muted-foreground">Fill in the details below to generate your custom ad script</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="product_name">Product Name</Label>

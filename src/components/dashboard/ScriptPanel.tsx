@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
 import { Slider } from "@/components/ui/slider";
+import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -22,20 +23,24 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
   const [isEditing, setIsEditing] = useState(false);
   const [editedScript, setEditedScript] = useState(script);
   const [voiceGender, setVoiceGender] = useState("female");
-  const [voiceAge, setVoiceAge] = useState("adult");
   const [voiceTone, setVoiceTone] = useState("friendly");
   const [speed, setSpeed] = useState([1.0]);
+  const [backgroundMusic, setBackgroundMusic] = useState("none");
+  const [outputFileName, setOutputFileName] = useState("");
 
   useEffect(() => {
     setEditedScript(script);
   }, [script]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 h-full flex flex-col">
       {/* Generated Script */}
-      <Card className="shadow-soft">
+      <Card className="shadow-soft flex-1 flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between">
-          <CardTitle>Generated Script</CardTitle>
+          <div>
+            <CardTitle>Generated Script</CardTitle>
+            <p className="text-sm text-muted-foreground mt-1">This is an example script. Fill in ad details to generate an ad.</p>
+          </div>
           {script && (
             <Button
               variant="ghost"
@@ -47,7 +52,7 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
             </Button>
           )}
         </CardHeader>
-        <CardContent>
+        <CardContent className="flex-1">
           {isGenerating ? (
             <div className="space-y-3">
               <div className="h-4 bg-muted rounded animate-pulse" />
@@ -87,34 +92,34 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-6">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label>Gender</Label>
-                <Select value={voiceGender} onValueChange={setVoiceGender}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="male">Male</SelectItem>
-                    <SelectItem value="female">Female</SelectItem>
-                    <SelectItem value="neutral">Neutral</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label>Background Music Style</Label>
+              <Select value={backgroundMusic} onValueChange={setBackgroundMusic}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="none">None</SelectItem>
+                  <SelectItem value="ambient">Ambient</SelectItem>
+                  <SelectItem value="upbeat">Upbeat</SelectItem>
+                  <SelectItem value="classical">Classical</SelectItem>
+                  <SelectItem value="electronic">Electronic</SelectItem>
+                  <SelectItem value="acoustic">Acoustic</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
 
-              <div className="space-y-2">
-                <Label>Age</Label>
-                <Select value={voiceAge} onValueChange={setVoiceAge}>
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="young">Young</SelectItem>
-                    <SelectItem value="adult">Adult</SelectItem>
-                    <SelectItem value="senior">Senior</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            <div className="space-y-2">
+              <Label>Gender</Label>
+              <Select value={voiceGender} onValueChange={setVoiceGender}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="male">Male</SelectItem>
+                  <SelectItem value="female">Female</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2">
@@ -126,9 +131,9 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                 <SelectContent>
                   <SelectItem value="friendly">Friendly</SelectItem>
                   <SelectItem value="professional">Professional</SelectItem>
-                  <SelectItem value="energetic">Energetic</SelectItem>
+                  <SelectItem value="casual">Casual</SelectItem>
+                  <SelectItem value="dramatic">Dramatic</SelectItem>
                   <SelectItem value="calm">Calm</SelectItem>
-                  <SelectItem value="excited">Excited</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -151,6 +156,16 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                 <span>1.0x</span>
                 <span>2.0x</span>
               </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="outputFileName">Output File Name</Label>
+              <Input
+                id="outputFileName"
+                value={outputFileName}
+                onChange={(e) => setOutputFileName(e.target.value)}
+                placeholder="my-audio-ad"
+              />
             </div>
 
             <div className="flex gap-3 pt-4">

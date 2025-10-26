@@ -6,7 +6,6 @@ import { ScriptPanel } from "@/components/dashboard/ScriptPanel";
 import { Button } from "@/components/ui/button";
 import { Plus, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
-import logo from "@/assets/audiomate-logo.png";
 
 const Dashboard = () => {
   const { theme, setTheme } = useTheme();
@@ -31,16 +30,15 @@ Don't miss out - experience the difference today!`;
 
   return (
     <SidebarProvider>
-      <div className="min-h-screen flex w-full bg-background">
+      <div className="min-h-screen flex w-full bg-background relative overflow-hidden">
+        {/* Orange gradient background from the right */}
+        <div className="absolute inset-0 bg-gradient-to-l from-orange-100/40 via-transparent to-transparent dark:from-orange-950/20 dark:via-transparent pointer-events-none" />
+        
         <DashboardSidebar />
         
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col relative z-10">
           {/* Header */}
-          <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm">
-            <div className="flex items-center gap-3">
-              <img src={logo} alt="Audiomate" className="h-8 w-8" />
-              <h1 className="text-xl font-semibold">Audio Ad Generator</h1>
-            </div>
+          <header className="h-16 border-b border-border flex items-center justify-end px-6 bg-card/50 backdrop-blur-sm">
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
