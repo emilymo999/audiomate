@@ -19,7 +19,7 @@ user_inputs = {
     "example_output": (
         "Your story deserves a voice. ElevenLabs turns your words into lifelike sound — ready for any audience, in any language."
     ), 
-    "language": "vietnamese"
+    "language": "english"
 }
 
 script_generator = ScriptGenerator(user_inputs)
@@ -30,7 +30,7 @@ speech_generator = ElevenLabsSpeechGenerator(api_key=os.getenv('ELEVENLABS_API_K
 tone = "dramatic"
 gender = "male"
 background_music = "electronic"
-language = "vietnamese" 
+language = "english" 
 
 speech_generator.generate_speech(
     script, 

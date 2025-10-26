@@ -1,8 +1,9 @@
-from openai import OpenAI
+from google import genai
+import os
 
 class ScriptGenerator:
-    def __init__(self, inputs: dict, model="gpt-4o"):
-        self.client = OpenAI()
+    def __init__(self, inputs: dict, model="gemini-2.5-flash"):
+        self.client = genai.Client(api_key=os.getenv('GEMINI_API_KEY'))
         self.model = model
         self.inputs = inputs
     
@@ -57,8 +58,8 @@ class ScriptGenerator:
         """
 
         prompt = prompt_template.format(**self.inputs)
-        response = self.client.responses.create(
+        response = self.client.models.generate_content(
             model=self.model,
-            input=prompt
+            contents=prompt
         )
-        return response.output_text
+        return response.text
