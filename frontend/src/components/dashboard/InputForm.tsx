@@ -5,12 +5,96 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
-import { Sparkles } from "lucide-react";
+import { Sparkles, ClipboardList } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface InputFormProps {
   onGenerate: (data: any) => void;
   isGenerating: boolean;
 }
+
+const languages = [
+  { code: "af", name: "Afrikaans", flag: "🇿🇦" },
+  { code: "ar", name: "Arabic", flag: "🇸🇦" },
+  { code: "hy", name: "Armenian", flag: "🇦🇲" },
+  { code: "as", name: "Assamese", flag: "🇮🇳" },
+  { code: "az", name: "Azerbaijani", flag: "🇦🇿" },
+  { code: "be", name: "Belarusian", flag: "🇧🇾" },
+  { code: "bn", name: "Bengali", flag: "🇧🇩" },
+  { code: "bs", name: "Bosnian", flag: "🇧🇦" },
+  { code: "bg", name: "Bulgarian", flag: "🇧🇬" },
+  { code: "ca", name: "Catalan", flag: "🇪🇸" },
+  { code: "ceb", name: "Cebuano", flag: "🇵🇭" },
+  { code: "ny", name: "Chichewa", flag: "🇲🇼" },
+  { code: "hr", name: "Croatian", flag: "🇭🇷" },
+  { code: "cs", name: "Czech", flag: "🇨🇿" },
+  { code: "da", name: "Danish", flag: "🇩🇰" },
+  { code: "nl", name: "Dutch", flag: "🇳🇱" },
+  { code: "en", name: "English", flag: "🇺🇸" },
+  { code: "et", name: "Estonian", flag: "🇪🇪" },
+  { code: "fil", name: "Filipino", flag: "🇵🇭" },
+  { code: "fi", name: "Finnish", flag: "🇫🇮" },
+  { code: "fr", name: "French", flag: "🇫🇷" },
+  { code: "gl", name: "Galician", flag: "🇪🇸" },
+  { code: "ka", name: "Georgian", flag: "🇬🇪" },
+  { code: "de", name: "German", flag: "🇩🇪" },
+  { code: "el", name: "Greek", flag: "🇬🇷" },
+  { code: "gu", name: "Gujarati", flag: "🇮🇳" },
+  { code: "ha", name: "Hausa", flag: "🇳🇬" },
+  { code: "he", name: "Hebrew", flag: "🇮🇱" },
+  { code: "hi", name: "Hindi", flag: "🇮🇳" },
+  { code: "hu", name: "Hungarian", flag: "🇭🇺" },
+  { code: "is", name: "Icelandic", flag: "🇮🇸" },
+  { code: "id", name: "Indonesian", flag: "🇮🇩" },
+  { code: "ga", name: "Irish", flag: "🇮🇪" },
+  { code: "it", name: "Italian", flag: "🇮🇹" },
+  { code: "ja", name: "Japanese", flag: "🇯🇵" },
+  { code: "jv", name: "Javanese", flag: "🇮🇩" },
+  { code: "kn", name: "Kannada", flag: "🇮🇳" },
+  { code: "kk", name: "Kazakh", flag: "🇰🇿" },
+  { code: "ky", name: "Kirghiz", flag: "🇰🇬" },
+  { code: "ko", name: "Korean", flag: "🇰🇷" },
+  { code: "lv", name: "Latvian", flag: "🇱🇻" },
+  { code: "ln", name: "Lingala", flag: "🇨🇩" },
+  { code: "lt", name: "Lithuanian", flag: "🇱🇹" },
+  { code: "lb", name: "Luxembourgish", flag: "🇱🇺" },
+  { code: "mk", name: "Macedonian", flag: "🇲🇰" },
+  { code: "ms", name: "Malay", flag: "🇲🇾" },
+  { code: "ml", name: "Malayalam", flag: "🇮🇳" },
+  { code: "zh", name: "Mandarin Chinese", flag: "🇨🇳" },
+  { code: "mr", name: "Marathi", flag: "🇮🇳" },
+  { code: "ne", name: "Nepali", flag: "🇳🇵" },
+  { code: "no", name: "Norwegian", flag: "🇳🇴" },
+  { code: "ps", name: "Pashto", flag: "🇦🇫" },
+  { code: "fa", name: "Persian", flag: "🇮🇷" },
+  { code: "pl", name: "Polish", flag: "🇵🇱" },
+  { code: "pt", name: "Portuguese", flag: "🇵🇹" },
+  { code: "pa", name: "Punjabi", flag: "🇮🇳" },
+  { code: "ro", name: "Romanian", flag: "🇷🇴" },
+  { code: "ru", name: "Russian", flag: "🇷🇺" },
+  { code: "sr", name: "Serbian", flag: "🇷🇸" },
+  { code: "sd", name: "Sindhi", flag: "🇵🇰" },
+  { code: "sk", name: "Slovak", flag: "🇸🇰" },
+  { code: "sl", name: "Slovenian", flag: "🇸🇮" },
+  { code: "so", name: "Somali", flag: "🇸🇴" },
+  { code: "es", name: "Spanish", flag: "🇪🇸" },
+  { code: "sw", name: "Swahili", flag: "🇰🇪" },
+  { code: "sv", name: "Swedish", flag: "🇸🇪" },
+  { code: "ta", name: "Tamil", flag: "🇮🇳" },
+  { code: "te", name: "Telugu", flag: "🇮🇳" },
+  { code: "th", name: "Thai", flag: "🇹🇭" },
+  { code: "tr", name: "Turkish", flag: "🇹🇷" },
+  { code: "uk", name: "Ukrainian", flag: "🇺🇦" },
+  { code: "ur", name: "Urdu", flag: "🇵🇰" },
+  { code: "vi", name: "Vietnamese", flag: "🇻🇳" },
+  { code: "cy", name: "Welsh", flag: "CY" },
+];
 
 export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   const [formData, setFormData] = useState({
@@ -21,6 +105,7 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
     desired_length: 30,
     target_audience: "",
     distribution_method: "",
+    language: "en",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -33,11 +118,15 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   };
 
   return (
-    <Card className="shadow-soft">
+    <Card className="shadow-soft flex flex-col">
       <CardHeader>
-        <CardTitle>Ad Details</CardTitle>
+        <CardTitle className="flex items-center gap-2">
+          <ClipboardList className="h-5 w-5" />
+          Ad Details
+        </CardTitle>
+        <p className="text-sm text-muted-foreground">Fill in the details below to generate your custom ad script</p>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex-1">
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="product_name">Product Name</Label>
@@ -57,7 +146,7 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
               value={formData.product_details}
               onChange={(e) => handleChange("product_details", e.target.value)}
               placeholder="Describe your product's key features and benefits"
-              rows={4}
+              rows={3}
               required
             />
           </div>
@@ -104,6 +193,34 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
               placeholder="e.g., Radio, Spotify, Podcast"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Language</Label>
+            <Select
+              value={formData.language}
+              onValueChange={(value) => handleChange("language", value)}
+            >
+              <SelectTrigger id="language">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-background max-h-[300px]">
+                {languages.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    <span className="flex items-center gap-3">
+                      <span className="flex items-center justify-center w-6 h-6 rounded-full overflow-hidden text-lg leading-none bg-muted">
+                        {lang.code === "cy" ? (
+                          <span className="text-xs font-bold text-foreground">CY</span>
+                        ) : (
+                          lang.flag
+                        )}
+                      </span>
+                      <span className="font-medium">{lang.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-4">

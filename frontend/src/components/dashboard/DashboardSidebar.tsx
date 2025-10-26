@@ -4,25 +4,27 @@ import {
   SidebarContent,
   SidebarGroup,
   SidebarGroupContent,
+  SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarFooter,
 } from "@/components/ui/sidebar";
-import { Home, Trash2, MessageSquare } from "lucide-react";
+import { Library as LibraryIcon, MessageSquare, Plus } from "lucide-react";
 import logo from "@/assets/audiomate-logo.png";
 
-const menuItems = [
-  { title: "Home", url: "/dashboard", icon: Home },
-  { title: "Recently Deleted", url: "/dashboard", icon: Trash2 },
+const savedAds = [
+  { title: "Summer Sale Campaign", id: "summer-sale" },
+  { title: "Product Launch Audio", id: "product-launch" },
+  { title: "Holiday Special Ad", id: "holiday-special" },
 ];
 
 export function DashboardSidebar() {
   const location = useLocation();
 
   return (
-    <Sidebar className="border-r border-sidebar-border">
-      <div className="p-6 border-b border-sidebar-border">
+    <Sidebar className="border-r border-border">
+      <div className="p-6 border-b border-border">
         <Link to="/" className="flex items-center gap-3">
           <img src={logo} alt="Audiomate" className="h-8 w-8" />
           <span className="text-lg font-bold bg-gradient-warm bg-clip-text text-transparent">
@@ -35,15 +37,41 @@ export function DashboardSidebar() {
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {menuItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
+              <SidebarMenuItem>
+                <SidebarMenuButton asChild>
+                  <Link to="/dashboard?new=true">
+                    <Plus className="h-4 w-4" />
+                    <span>New Project</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  asChild
+                  isActive={location.pathname === "/library"}
+                >
+                  <Link to="/library">
+                    <LibraryIcon className="h-4 w-4" />
+                    <span>Library</span>
+                  </Link>
+                </SidebarMenuButton>
+              </SidebarMenuItem>
+            </SidebarMenu>
+          </SidebarGroupContent>
+        </SidebarGroup>
+
+        <SidebarGroup>
+          <SidebarGroupLabel>Generated Ads</SidebarGroupLabel>
+          <SidebarGroupContent>
+            <SidebarMenu>
+              {savedAds.map((ad) => (
+                <SidebarMenuItem key={ad.id}>
                   <SidebarMenuButton
                     asChild
-                    isActive={location.pathname === item.url}
+                    isActive={location.pathname === `/saved-ad/${ad.id}`}
                   >
-                    <Link to={item.url}>
-                      <item.icon className="h-4 w-4" />
-                      <span>{item.title}</span>
+                    <Link to={`/saved-ad/${ad.id}`}>
+                      <span className="truncate">{ad.title}</span>
                     </Link>
                   </SidebarMenuButton>
                 </SidebarMenuItem>
@@ -53,11 +81,14 @@ export function DashboardSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-sidebar-border p-4">
+      <SidebarFooter className="border-t border-border p-4">
         <SidebarMenu>
           <SidebarMenuItem>
-            <SidebarMenuButton asChild>
-              <Link to="/dashboard">
+            <SidebarMenuButton 
+              asChild
+              isActive={location.pathname === "/contact"}
+            >
+              <Link to="/contact">
                 <MessageSquare className="h-4 w-4" />
                 <span>Feedback</span>
               </Link>
