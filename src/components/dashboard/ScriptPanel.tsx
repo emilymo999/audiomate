@@ -2,8 +2,6 @@ import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
-import { Slider } from "@/components/ui/slider";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
@@ -24,9 +22,7 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
   const [editedScript, setEditedScript] = useState(script);
   const [voiceGender, setVoiceGender] = useState("female");
   const [voiceTone, setVoiceTone] = useState("friendly");
-  const [speed, setSpeed] = useState([1.0]);
   const [backgroundMusic, setBackgroundMusic] = useState("none");
-  const [outputFileName, setOutputFileName] = useState("");
 
   useEffect(() => {
     setEditedScript(script);
@@ -136,36 +132,6 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                   <SelectItem value="calm">Calm</SelectItem>
                 </SelectContent>
               </Select>
-            </div>
-
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <Label>Speed</Label>
-                <span className="text-sm font-medium">{speed[0].toFixed(1)}x</span>
-              </div>
-              <Slider
-                value={speed}
-                onValueChange={setSpeed}
-                min={0.5}
-                max={2.0}
-                step={0.1}
-                className="w-full"
-              />
-              <div className="flex justify-between text-xs text-muted-foreground">
-                <span>0.5x</span>
-                <span>1.0x</span>
-                <span>2.0x</span>
-              </div>
-            </div>
-
-            <div className="space-y-2">
-              <Label htmlFor="outputFileName">Output File Name</Label>
-              <Input
-                id="outputFileName"
-                value={outputFileName}
-                onChange={(e) => setOutputFileName(e.target.value)}
-                placeholder="my-audio-ad"
-              />
             </div>
 
             <div className="flex gap-3 pt-4">

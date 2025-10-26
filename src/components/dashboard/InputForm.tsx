@@ -36,7 +36,7 @@ const languages = [
   { code: "cs", name: "Czech", flag: "🇨🇿" },
   { code: "da", name: "Danish", flag: "🇩🇰" },
   { code: "nl", name: "Dutch", flag: "🇳🇱" },
-  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "en", name: "English", flag: "🇺🇸" },
   { code: "et", name: "Estonian", flag: "🇪🇪" },
   { code: "fil", name: "Filipino", flag: "🇵🇭" },
   { code: "fi", name: "Finnish", flag: "🇫🇮" },
@@ -93,7 +93,7 @@ const languages = [
   { code: "uk", name: "Ukrainian", flag: "🇺🇦" },
   { code: "ur", name: "Urdu", flag: "🇵🇰" },
   { code: "vi", name: "Vietnamese", flag: "🇻🇳" },
-  { code: "cy", name: "Welsh", flag: "🏴󠁧󠁢󠁷󠁬󠁳󠁿" },
+  { code: "cy", name: "Welsh", flag: "CY" },
 ];
 
 export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
@@ -206,7 +206,11 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
                   <SelectItem key={lang.code} value={lang.code}>
                     <span className="flex items-center gap-3">
                       <span className="flex items-center justify-center w-6 h-6 rounded-full overflow-hidden text-lg leading-none bg-muted">
-                        {lang.flag}
+                        {lang.code === "cy" ? (
+                          <span className="text-xs font-bold text-foreground">CY</span>
+                        ) : (
+                          lang.flag
+                        )}
                       </span>
                       <span className="font-medium">{lang.name}</span>
                     </span>
