@@ -6,6 +6,7 @@ import { ScriptPanel } from "@/components/dashboard/ScriptPanel";
 import { Button } from "@/components/ui/button";
 import { Plus, Moon, Sun } from "lucide-react";
 import { useTheme } from "next-themes";
+import logo from "@/assets/audiomate-logo.png";
 
 const Dashboard = () => {
   const { theme, setTheme } = useTheme();
@@ -36,7 +37,10 @@ Don't miss out - experience the difference today!`;
         <div className="flex-1 flex flex-col">
           {/* Header */}
           <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm">
-            <h1 className="text-xl font-semibold">Audio Ad Generator</h1>
+            <div className="flex items-center gap-3">
+              <img src={logo} alt="Audiomate" className="h-8 w-8" />
+              <h1 className="text-xl font-semibold">Audio Ad Generator</h1>
+            </div>
             <div className="flex items-center gap-3">
               <button
                 onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
