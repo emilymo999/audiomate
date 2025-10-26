@@ -6,11 +6,50 @@ import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Slider } from "@/components/ui/slider";
 import { Sparkles } from "lucide-react";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 interface InputFormProps {
   onGenerate: (data: any) => void;
   isGenerating: boolean;
 }
+
+const languages = [
+  { code: "en", name: "English", flag: "🇬🇧" },
+  { code: "hi", name: "Hindi", flag: "🇮🇳" },
+  { code: "pt", name: "Portuguese", flag: "🇵🇹" },
+  { code: "zh", name: "Chinese", flag: "🇨🇳" },
+  { code: "es", name: "Spanish", flag: "🇪🇸" },
+  { code: "fr", name: "French", flag: "🇫🇷" },
+  { code: "de", name: "German", flag: "🇩🇪" },
+  { code: "ja", name: "Japanese", flag: "🇯🇵" },
+  { code: "ar", name: "Arabic", flag: "🇸🇦" },
+  { code: "ru", name: "Russian", flag: "🇷🇺" },
+  { code: "ko", name: "Korean", flag: "🇰🇷" },
+  { code: "id", name: "Indonesian", flag: "🇮🇩" },
+  { code: "it", name: "Italian", flag: "🇮🇹" },
+  { code: "nl", name: "Dutch", flag: "🇳🇱" },
+  { code: "tr", name: "Turkish", flag: "🇹🇷" },
+  { code: "pl", name: "Polish", flag: "🇵🇱" },
+  { code: "sv", name: "Swedish", flag: "🇸🇪" },
+  { code: "fil", name: "Filipino", flag: "🇵🇭" },
+  { code: "ms", name: "Malay", flag: "🇲🇾" },
+  { code: "ro", name: "Romanian", flag: "🇷🇴" },
+  { code: "uk", name: "Ukrainian", flag: "🇺🇦" },
+  { code: "el", name: "Greek", flag: "🇬🇷" },
+  { code: "cs", name: "Czech", flag: "🇨🇿" },
+  { code: "da", name: "Danish", flag: "🇩🇰" },
+  { code: "fi", name: "Finnish", flag: "🇫🇮" },
+  { code: "bg", name: "Bulgarian", flag: "🇧🇬" },
+  { code: "hr", name: "Croatian", flag: "🇭🇷" },
+  { code: "sk", name: "Slovak", flag: "🇸🇰" },
+  { code: "ta", name: "Tamil", flag: "🇮🇳" },
+];
 
 export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   const [formData, setFormData] = useState({
@@ -21,6 +60,7 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
     desired_length: 30,
     target_audience: "",
     distribution_method: "",
+    language: "en",
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -105,6 +145,28 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
               placeholder="e.g., Radio, Spotify, Podcast"
               required
             />
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor="language">Language</Label>
+            <Select
+              value={formData.language}
+              onValueChange={(value) => handleChange("language", value)}
+            >
+              <SelectTrigger id="language">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-background max-h-[300px]">
+                {languages.map((lang) => (
+                  <SelectItem key={lang.code} value={lang.code}>
+                    <span className="flex items-center gap-2">
+                      <span>{lang.flag}</span>
+                      <span>{lang.name}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </div>
 
           <div className="space-y-4">
