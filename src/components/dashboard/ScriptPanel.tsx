@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Download, Edit, Volume2, Pause, RotateCcw, RotateCw, FileText, Music } from "lucide-react";
+import { Play, Download, Edit, Volume2, Pause, FileText, Music } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 interface ScriptPanelProps {
@@ -156,9 +156,6 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                 <Play className="h-4 w-4 mr-2" />
                 {isGeneratingAudio ? "Generating..." : "Generate Audio"}
               </Button>
-              <Button variant="outline" size="icon">
-                <Download className="h-4 w-4" />
-              </Button>
             </div>
           </CardContent>
         </Card>
@@ -181,15 +178,6 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                   <Button
                     variant="ghost"
                     size="icon"
-                    className="h-8 w-8"
-                    onClick={() => {}}
-                  >
-                    <RotateCcw className="h-4 w-4" />
-                  </Button>
-                  
-                  <Button
-                    variant="ghost"
-                    size="icon"
                     className="h-10 w-10"
                     onClick={() => setIsPlaying(!isPlaying)}
                   >
@@ -200,20 +188,15 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
                     )}
                   </Button>
                   
-                  <Button
-                    variant="ghost"
-                    size="icon"
-                    className="h-8 w-8"
-                    onClick={() => {}}
-                  >
-                    <RotateCw className="h-4 w-4" />
-                  </Button>
-                  
                   <div className="flex-1 text-sm font-medium">
                     Audio Ad - Final Mix
                   </div>
                   
                   <Volume2 className="h-5 w-5 text-muted-foreground" />
+                  
+                  <Button variant="outline" size="icon">
+                    <Download className="h-4 w-4" />
+                  </Button>
                 </div>
 
                 {/* Progress Bar */}
