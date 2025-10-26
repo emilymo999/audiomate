@@ -60,18 +60,18 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
               <Textarea
                 value={editedScript}
                 onChange={(e) => setEditedScript(e.target.value)}
-                rows={6}
+                rows={4}
                 className="font-mono text-sm"
               />
             ) : (
               <div className="prose prose-sm max-w-none">
-                <p className="whitespace-pre-wrap text-foreground">{editedScript}</p>
+                <p className="whitespace-pre-wrap text-foreground text-sm">{editedScript}</p>
               </div>
             )
           ) : (
-            <div className="py-6 space-y-4">
+            <div className="py-4 space-y-3">
               <p className="text-foreground leading-relaxed text-sm">
-                In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. <span className="text-pink-500">[sarcastically]</span> Not the "burn it all down" kind... <span className="text-pink-500">[giggles]</span> but he was gentle, wise, with eyes like old stars. <span className="text-pink-500">[whispers]</span> Even the birds fell silent when he passed.
+                In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. <span className="text-pink-500">[sarcastically]</span> Not the "burn it all down" kind...
               </p>
             </div>
           )}
