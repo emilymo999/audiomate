@@ -5,6 +5,7 @@ import { useTheme } from "next-themes";
 import { Moon, Sun } from "lucide-react";
 import logo from "@/assets/audiomate-logo.png";
 import gradientBg from "@/assets/gradient-bg.jpg";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import {
   Accordion,
   AccordionContent,
@@ -22,6 +23,10 @@ import Autoplay from "embla-carousel-autoplay";
 
 const Index = () => {
   const { theme, setTheme } = useTheme();
+  const companiesSection = useScrollAnimation();
+  const benefitsSection = useScrollAnimation();
+  const faqSection = useScrollAnimation();
+  const ctaSection = useScrollAnimation();
 
   const companies = [
     {
@@ -189,7 +194,7 @@ const Index = () => {
       </section>
 
       {/* Companies Section */}
-      <section className="relative z-10 py-24 px-6">
+      <section ref={companiesSection.ref} className={`relative z-10 py-24 px-6 transition-all duration-1000 ${companiesSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-7xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
             Applicable to various companies
@@ -210,12 +215,12 @@ const Index = () => {
             <CarouselContent className="-ml-4">
               {companies.map((company, index) => {
                 const colors = [
+                  "from-orange-300/10 to-orange-400/5 border-orange-300/30 hover:border-orange-300/50",
                   "from-orange-500/10 to-orange-600/5 border-orange-500/30 hover:border-orange-500/50",
-                  "from-blue-500/10 to-blue-600/5 border-blue-500/30 hover:border-blue-500/50",
-                  "from-purple-500/10 to-purple-600/5 border-purple-500/30 hover:border-purple-500/50",
-                  "from-green-500/10 to-green-600/5 border-green-500/30 hover:border-green-500/50",
-                  "from-pink-500/10 to-pink-600/5 border-pink-500/30 hover:border-pink-500/50",
-                  "from-amber-500/10 to-amber-600/5 border-amber-500/30 hover:border-amber-500/50"
+                  "from-orange-700/10 to-orange-800/5 border-orange-700/30 hover:border-orange-700/50",
+                  "from-amber-400/10 to-orange-500/5 border-amber-400/30 hover:border-amber-400/50",
+                  "from-orange-600/10 to-red-600/5 border-orange-600/30 hover:border-orange-600/50",
+                  "from-amber-600/10 to-orange-700/5 border-amber-600/30 hover:border-amber-600/50"
                 ];
                 return (
                   <CarouselItem key={index} className="pl-4 md:basis-1/2 lg:basis-1/3">
@@ -236,7 +241,7 @@ const Index = () => {
       </section>
 
       {/* Benefits Section */}
-      <section className="relative z-10 py-24 px-6 bg-gradient-to-b from-transparent via-card/20 to-transparent">
+      <section ref={benefitsSection.ref} className={`relative z-10 py-24 px-6 bg-gradient-to-b from-transparent via-card/20 to-transparent transition-all duration-1000 ${benefitsSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-6xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-6">
             Why choose Audiomate?
@@ -267,7 +272,7 @@ const Index = () => {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative z-10 py-24 px-6">
+      <section ref={faqSection.ref} className={`relative z-10 py-24 px-6 transition-all duration-1000 ${faqSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10'}`}>
         <div className="max-w-4xl mx-auto">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-16">
             FAQ — Audio Ad Generator
@@ -293,9 +298,9 @@ const Index = () => {
       </section>
 
       {/* Final CTA Section */}
-      <section className="relative z-10 py-32 px-6">
+      <section ref={ctaSection.ref} className={`relative z-10 py-32 px-6 transition-all duration-1000 ${ctaSection.isVisible ? 'opacity-100 scale-100' : 'opacity-0 scale-95'}`}>
         <div 
-          className="max-w-5xl mx-auto rounded-3xl p-16 text-center relative overflow-hidden animate-fade-in hover-scale"
+          className="max-w-5xl mx-auto rounded-3xl p-16 text-center relative overflow-hidden hover-scale"
           style={{
             background: 'linear-gradient(135deg, hsl(var(--primary) / 0.1) 0%, hsl(var(--accent) / 0.1) 100%)',
             backdropFilter: 'blur(20px)',
@@ -303,18 +308,20 @@ const Index = () => {
             animationDelay: '0.2s'
           }}
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-6">
+          <h2 className={`text-4xl md:text-5xl font-bold mb-6 transition-all duration-700 delay-200 ${ctaSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             Ready to get started?
           </h2>
-          <p className="text-xl text-muted-foreground mb-10 max-w-2xl mx-auto">
+          <p className={`text-xl text-muted-foreground mb-10 max-w-2xl mx-auto transition-all duration-700 delay-300 ${ctaSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
             Join thousands already creating professional audio ads with AI. Start broadcasting your message today.
           </p>
-          <Link to="/dashboard">
-            <Button variant="hero" size="xl" className="group">
-              Get Started Now
-              <Sparkles className="ml-2 group-hover:rotate-12 transition-transform" />
-            </Button>
-          </Link>
+          <div className={`transition-all duration-700 delay-500 ${ctaSection.isVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}>
+            <Link to="/dashboard">
+              <Button variant="hero" size="xl" className="group">
+                Get Started Now
+                <Sparkles className="ml-2 group-hover:rotate-12 transition-transform" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
