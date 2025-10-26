@@ -33,7 +33,7 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
   }, [script]);
 
   return (
-    <div className="space-y-6 h-full flex flex-col">
+    <div className="space-y-6 flex flex-col">
       {/* Generated Script */}
       <Card className="shadow-soft flex-1 flex flex-col">
         <CardHeader className="flex flex-row items-center justify-between">

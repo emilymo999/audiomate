@@ -33,7 +33,7 @@ export function InputForm({ onGenerate, isGenerating }: InputFormProps) {
   };
 
   return (
-    <Card className="shadow-soft h-full flex flex-col">
+    <Card className="shadow-soft flex flex-col">
       <CardHeader>
         <CardTitle>Ad Details</CardTitle>
         <p className="text-sm text-muted-foreground">Fill in the details below to generate your custom ad script</p>
