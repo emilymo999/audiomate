@@ -1,5 +1,8 @@
 from google import genai
+from dotenv import load_dotenv
 import os
+
+load_dotenv()
 
 class ScriptGenerator:
     def __init__(self, inputs: dict, model="gemini-2.5-flash"):
@@ -41,11 +44,6 @@ class ScriptGenerator:
 
         ### OUTPUT FORMAT:
         Return only the spoken script as plain text.
-        You may use the following tags to enhance emotional expression: 
-        - [laughs], [laughs harder], [starts laughing], [wheezing]
-        - [whispers]
-        - [sighs], [exhales]
-        - [sarcastic], [curious], [excited], [crying], [snorts], [mischievously]
 
         Punctuation should be intentional to enhance the delivery of the script.
         - Ellipses (…) add pauses and weight
@@ -54,7 +52,7 @@ class ScriptGenerator:
 
         Do not include any of the following:
         - Speaker identifiers (e.g., “Narrator:”, “Voiceover:”)
-        - Audio or music cues (e.g., “[Music fades in]”, “(cheerful tone)”)
+        - Audio, music, or tone cues (e.g., “[Music fades in]”, “(cheerful tone)”)
         """
 
         prompt = prompt_template.format(**self.inputs)

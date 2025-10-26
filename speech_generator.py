@@ -12,6 +12,10 @@ import requests
 import json
 import datetime
 from pathlib import Path
+from dotenv import load_dotenv
+
+load_dotenv()
+
 try:
     from pydub import AudioSegment
     from pydub.effects import normalize

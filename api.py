@@ -5,11 +5,15 @@ AudioMate Backend API Server
 REST API endpoints for script generation and speech synthesis.
 """
 
-from flask import Flask, request, jsonify, send_file
+from flask import Flask, request, jsonify, send_file, send_from_directory
 from flask_cors import CORS
 import os
 from pathlib import Path
 import traceback
+from dotenv import load_dotenv
+
+# Load environment variables from .env file
+load_dotenv()
 
 from llm import ScriptGenerator
 from speech_generator import ElevenLabsSpeechGenerator
@@ -195,6 +199,28 @@ def get_audio(filename):
         return jsonify({
             'error': f'Failed to retrieve audio: {str(e)}'
         }), 500
+
+
+# Serve frontend static files (must be last, after all API routes)
+@app.route('/', defaults={'path': ''}, methods=['GET'])
+@app.route('/<path:path>', methods=['GET'])
+def serve_frontend(path):
+    """Serve the frontend application."""
+    from flask import send_from_directory
+    
+    frontend_path = 'frontend/dist'
+    
+    # Handle root - serve index.html
+    if not path:
+        return send_from_directory(frontend_path, 'index.html')
+    
+    # Check if the requested file exists
+    file_path = Path(frontend_path) / path
+    if file_path.exists() and file_path.is_file():
+        return send_from_directory(frontend_path, path, mimetype=None)
+    
+    # Otherwise, serve index.html (for React Router)
+    return send_from_directory(frontend_path, 'index.html')
 
 
 if __name__ == '__main__':
