@@ -9,7 +9,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Play, Download, Edit, Volume2 } from "lucide-react";
+import { Play, Download, Edit, Volume2, Pause, RotateCcw, RotateCw } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 
 interface ScriptPanelProps {
@@ -23,6 +23,18 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
   const [voiceGender, setVoiceGender] = useState("female");
   const [voiceTone, setVoiceTone] = useState("friendly");
   const [backgroundMusic, setBackgroundMusic] = useState("none");
+  const [isGeneratingAudio, setIsGeneratingAudio] = useState(false);
+  const [audioGenerated, setAudioGenerated] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  const handleGenerateAudio = () => {
+    setIsGeneratingAudio(true);
+    // Simulate audio generation
+    setTimeout(() => {
+      setIsGeneratingAudio(false);
+      setAudioGenerated(true);
+    }, 2000);
+  };
 
   useEffect(() => {
     setEditedScript(script);
@@ -60,7 +72,7 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
               <Textarea
                 value={editedScript}
                 onChange={(e) => setEditedScript(e.target.value)}
-                rows={4}
+                rows={3}
                 className="font-mono text-sm"
               />
             ) : (
@@ -69,9 +81,9 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
               </div>
             )
           ) : (
-            <div className="py-4 space-y-3">
+            <div className="py-3 space-y-2">
               <p className="text-foreground leading-relaxed text-sm">
-                In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. <span className="text-pink-500">[sarcastically]</span> Not the "burn it all down" kind...
+                In the ancient land of Eldoria, where skies shimmered and forests whispered secrets...
               </p>
             </div>
           )}
@@ -135,14 +147,96 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
             </div>
 
             <div className="flex gap-3 pt-4">
-              <Button variant="hero" className="flex-1">
+              <Button 
+                variant="hero" 
+                className="flex-1"
+                onClick={handleGenerateAudio}
+                disabled={isGeneratingAudio}
+              >
                 <Play className="h-4 w-4 mr-2" />
-                Generate Audio
+                {isGeneratingAudio ? "Generating..." : "Generate Audio"}
               </Button>
               <Button variant="outline" size="icon">
                 <Download className="h-4 w-4" />
               </Button>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Audio Player */}
+      {script && (
+        <Card className="shadow-soft">
+          <CardHeader>
+            <CardTitle className="text-base">Generated Audio</CardTitle>
+          </CardHeader>
+          <CardContent>
+            {audioGenerated ? (
+              <div className="space-y-4">
+                {/* Audio Controls */}
+                <div className="flex items-center gap-4">
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => {}}
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-10 w-10"
+                    onClick={() => setIsPlaying(!isPlaying)}
+                  >
+                    {isPlaying ? (
+                      <Pause className="h-5 w-5" />
+                    ) : (
+                      <Play className="h-5 w-5" />
+                    )}
+                  </Button>
+                  
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className="h-8 w-8"
+                    onClick={() => {}}
+                  >
+                    <RotateCw className="h-4 w-4" />
+                  </Button>
+                  
+                  <div className="flex-1 text-sm font-medium">
+                    Audio Ad - Final Mix
+                  </div>
+                  
+                  <Volume2 className="h-5 w-5 text-muted-foreground" />
+                </div>
+
+                {/* Progress Bar */}
+                <div className="space-y-2">
+                  <div className="relative h-2 bg-muted rounded-full overflow-hidden">
+                    <div 
+                      className="absolute h-full bg-gradient-to-r from-orange-500 to-orange-400 rounded-full transition-all"
+                      style={{ width: "45%" }}
+                    />
+                    <div 
+                      className="absolute h-4 w-4 bg-orange-500 rounded-full top-1/2 -translate-y-1/2 shadow-lg"
+                      style={{ left: "calc(45% - 8px)" }}
+                    />
+                  </div>
+                  
+                  <div className="flex justify-between text-xs text-muted-foreground">
+                    <span>0:23</span>
+                    <span>0:30</span>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="py-8 text-center text-sm text-muted-foreground">
+                Generated audio will show up here
+              </div>
+            )}
           </CardContent>
         </Card>
       )}
