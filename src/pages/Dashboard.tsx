@@ -4,9 +4,11 @@ import { DashboardSidebar } from "@/components/dashboard/DashboardSidebar";
 import { InputForm } from "@/components/dashboard/InputForm";
 import { ScriptPanel } from "@/components/dashboard/ScriptPanel";
 import { Button } from "@/components/ui/button";
-import { Plus } from "lucide-react";
+import { Plus, Moon, Sun } from "lucide-react";
+import { useTheme } from "next-themes";
 
 const Dashboard = () => {
+  const { theme, setTheme } = useTheme();
   const [generatedScript, setGeneratedScript] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
 
@@ -35,10 +37,22 @@ Don't miss out - experience the difference today!`;
           {/* Header */}
           <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm">
             <h1 className="text-xl font-semibold">Audio Ad Generator</h1>
-            <Button variant="hero" size="sm">
-              <Plus className="mr-2 h-4 w-4" />
-              New Project
-            </Button>
+            <div className="flex items-center gap-3">
+              <button
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="p-2 rounded-lg hover:bg-muted transition-colors"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-4 w-4 text-foreground" />
+                ) : (
+                  <Moon className="h-4 w-4 text-foreground" />
+                )}
+              </button>
+              <Button variant="hero" size="sm">
+                <Plus className="mr-2 h-4 w-4" />
+                New Project
+              </Button>
+            </div>
           </header>
 
           {/* Main Content */}

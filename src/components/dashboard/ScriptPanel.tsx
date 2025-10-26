@@ -68,9 +68,11 @@ export function ScriptPanel({ script, isGenerating }: ScriptPanelProps) {
               </div>
             )
           ) : (
-            <p className="text-muted-foreground text-center py-8">
-              Fill in the form and generate your ad script
-            </p>
+            <div className="py-8 space-y-4">
+              <p className="text-foreground leading-relaxed">
+                In the ancient land of Eldoria, where skies shimmered and forests, whispered secrets to the wind, lived a dragon named Zephyros. <span className="text-pink-500">[sarcastically]</span> Not the "burn it all down" kind... <span className="text-pink-500">[giggles]</span> but he was gentle, wise, with eyes like old stars. <span className="text-pink-500">[whispers]</span> Even the birds fell silent when he passed.
+              </p>
+            </div>
           )}
         </CardContent>
       </Card>
